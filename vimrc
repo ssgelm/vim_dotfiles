@@ -182,7 +182,7 @@ imap <C-L> <SPACE>=><SPACE>
 
 " ========= Functions ========
 
-command SudoW w !sudo tee %
+command! SudoW w !sudo tee %
 
 " http://techspeak.plainlystated.com/2009/08/vim-tohtml-customization.html
 function! DivHtml(line1, line2)
@@ -196,7 +196,7 @@ function! DivHtml(line1, line2)
 
   set nonu
 endfunction
-command -range=% DivHtml :call DivHtml(<line1>,<line2>)
+command! -range=% DivHtml :call DivHtml(<line1>,<line2>)
 
 function! GitGrepWord()
   cgetexpr system("git grep -n '" . expand("<cword>") . "'")
