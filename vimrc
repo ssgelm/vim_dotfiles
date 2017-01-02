@@ -275,6 +275,22 @@ function! __HardMode()
   nmap <right> <nop>
 endfunction
 
+" Cursor to orange on insert mode
+" Green on command/other mode
+" Disabled because it misbehaves when changing tmux panes
+" if exists('$TMUX')
+"     let &t_EI = "\\<Esc>Ptmux;\\<Esc>\\033]PlD98E53\\033\\\\\\033[0 q"
+"     let &t_SI = "\\<Esc>Ptmux;\\<Esc>\\033]Pl66FF33\\033\\\\\\033[6 q"
+"     silent !echo -ne "\\033Ptmux;\\033\\033]PlD98E53\\033\\\\"
+"     silent !echo -ne "\\033[0 q"
+"     autocmd VimLeave * silent !echo -ne "\\033Ptmux;\\033\\033]PlD98E53\\033\\\\\\033[0 q"
+" else
+"     let &t_EI = "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
+"     let &t_SI = "\\033]Pl66FF33\\033\\033]50;CursorShape=1\\007"
+"     silent !echo -ne "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
+"     autocmd VimLeave * silent !echo -ne "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
+" endif
+
 "-------- Local Overrides
 ""If you have options you'd like to override locally for
 "some reason (don't want to store something in a
