@@ -275,6 +275,7 @@ function! __HardMode()
   nmap <right> <nop>
 endfunction
 
+"-------- sg config
 " Cursor to orange on insert mode
 " Green on command/other mode
 " Disabled because it misbehaves when changing tmux panes
@@ -290,6 +291,16 @@ endfunction
 "     silent !echo -ne "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
 "     autocmd VimLeave * silent !echo -ne "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
 " endif
+
+" Airline
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#tab_min_count = 2
+
+" vim-gitgutter
+set updatetime=250
 
 "-------- Local Overrides
 ""If you have options you'd like to override locally for

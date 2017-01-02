@@ -58,6 +58,9 @@ Plug 'google/vim-jsonnet'
 " sg's plugins
 Plug 'keith/swift.vim'
 Plug 'sevko/vim-nand2tetris-syntax'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'airblade/vim-gitgutter'
 
 if filereadable(expand("~/.vimrc.bundles.local"))
   source ~/.vimrc.bundles.local
