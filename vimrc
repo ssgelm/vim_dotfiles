@@ -305,6 +305,9 @@ autocmd BufEnter * AirlineRefresh
 " vim-gitgutter
 set updatetime=250
 
+" Set cursor shape in neovim
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+
 "-------- Local Overrides
 ""If you have options you'd like to override locally for
 "some reason (don't want to store something in a
