@@ -12,7 +12,7 @@ Plug 'jlanzarotta/bufexplorer'
 Plug 'mileszs/ack.vim'
 Plug 'vim-scripts/Align'
 Plug 'bkad/CamelCaseMotion'
-Plug 'braintreeps/command-t', { 'do': 'rake make' }
+Plug 'wincent/command-t', { 'do': 'rake make' }
 Plug 'mattn/emmet-vim'
 Plug 'henrik/vim-indexed-search'
 Plug 'vim-scripts/mako.vim'
