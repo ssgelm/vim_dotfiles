@@ -6,9 +6,14 @@ if &shell == "/usr/bin/sudosh"
   set shell=/bin/bash
 endif
 
-filetype off
-call pathogen#runtime_append_all_bundles()
-filetype plugin indent on
+" Install vim plugins
+if filereadable(expand("~/.vimrc.bundles"))
+  source ~/.vimrc.bundles
+endif
+
+if filereadable(expand("/etc/vim/vimrc.bundles"))
+  source /etc/vim/vimrc.bundles
+endif
 
 
 " ========= Options ========
@@ -29,7 +34,9 @@ set dir=/tmp//
 set scrolloff=5
 set ignorecase
 set smartcase
-set wildignore+=*.pyc,*.o,*.class,*.lo,.git,vendor/*
+set wildignore+=*.pyc,*.o,*.class,*.lo,.git
+set tags+=gems.tags
+set mouse=
 
 if version >= 703
   set undodir=~/.vim/undodir
@@ -49,16 +56,23 @@ augroup markdown
   au!
   au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
 augroup END
+augroup Drakefile
+  au!
+  au BufNewFile,BufRead Drakefile,drakefile setlocal filetype=ruby
+augroup END
 
 " File Types
 
 autocmd FileType php setlocal tabstop=4 shiftwidth=4 softtabstop=4
 autocmd FileType python setlocal tabstop=4 shiftwidth=4 softtabstop=4
+autocmd FileType java setlocal tabstop=4 shiftwidth=4 softtabstop=4
+autocmd FileType cs setlocal tabstop=4 shiftwidth=4 softtabstop=4
 
 autocmd FileType tex setlocal textwidth=78
 autocmd BufNewFile,BufRead *.txt setlocal textwidth=78
 
 autocmd FileType ruby runtime ruby_mappings.vim
+autocmd FileType python runtime python_mappings.vim
 
 if version >= 700
     autocmd BufNewFile,BufRead *.txt setlocal spell spelllang=en_us
@@ -69,8 +83,12 @@ endif
 autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
 autocmd BufRead,InsertLeave * match ExtraWhitespace /\s\+$/
 
+" Use folding but start unfolded
+set foldmethod=indent
+autocmd BufWinEnter * silent! :%foldopen!
+
 " Autoremove trailing spaces when saving the buffer
-autocmd FileType ruby,c,cpp,java,php,html autocmd BufWritePre <buffer> :%s/\s\+$//e
+autocmd FileType c,cpp,elixir,eruby,html,java,javascript,php,ruby autocmd BufWritePre <buffer> :%s/\s\+$//e
 
 " Highlight too-long lines
 autocmd BufRead,InsertEnter,InsertLeave * 2match LineLengthError /\%126v.*/
@@ -102,10 +120,6 @@ let html_use_css=1
 let html_number_lines=0
 let html_no_pre=1
 
-let vimclojure#WantNailgun = 0
-let vimclojure#HighlightBuiltins = 1
-let vimclojure#ParenRainbow = 1
-
 let g:gist_clip_command = 'pbcopy'
 let g:gist_detect_filetype = 1
 
@@ -116,7 +130,7 @@ let g:no_html_toolbar = 'yes'
 
 let coffee_no_trailing_space_error = 1
 
-let NERDTreeIgnore=['\.pyc', '\.o', '\.class', '\.lo']
+let NERDTreeIgnore=['\.pyc$', '\.o$', '\.class$', '\.lo$']
 let NERDTreeHijackNetrw = 0
 
 let g:netrw_banner = 0
@@ -128,6 +142,19 @@ let g:CommandTMatchWindowAtTop = 1
 let g:CommandTCancelMap     = ['<ESC>', '<C-c>']
 let g:CommandTSelectNextMap = ['<C-n>', '<C-j>', '<ESC>OB']
 let g:CommandTSelectPrevMap = ['<C-p>', '<C-k>', '<ESC>OA']
+let g:CommandTWildIgnore=&wildignore . ",vendor/*,node_modules/**,bower_components/**"
+let g:CommandTMatchWindowReverse = 0
+
+let g:vim_markdown_folding_disabled=1
+
+if exists(':RainbowParenthesesToggle')
+  autocmd VimEnter *       RainbowParenthesesToggle
+  autocmd Syntax   clojure RainbowParenthesesLoadRound
+  autocmd Syntax   clojure RainbowParenthesesLoadSquare
+  autocmd Syntax   clojure RainbowParenthesesLoadBraces
+endif
+
+let g:puppet_align_hashes = 0
 
 " ========= Shortcuts ========
 
@@ -156,6 +183,7 @@ map <silent> <LocalLeader>vx :wa<CR> :VimuxClosePanes<CR>
 map <silent> <LocalLeader>vp :VimuxPromptCommand<CR>
 vmap <silent> <LocalLeader>vs "vy :call VimuxRunCommand(@v)<CR>
 nmap <silent> <LocalLeader>vs vip<LocalLeader>vs<CR>
+map <silent> <LocalLeader>ds :call VimuxRunCommand('clear; grep -E "^ *describe[ \(]\|^ *context[ \(]\|^ *it[ \(]" ' . bufname("%"))<CR>
 
 map <silent> <LocalLeader>rt :!ctags -R --exclude=".git\|.svn\|log\|tmp\|db\|pkg" --extra=+f --langmap=Lisp:+.clj<CR>
 
@@ -175,6 +203,11 @@ nnoremap <silent> j gj
 nnoremap <silent> Y y$
 
 map <silent> <LocalLeader>ws :highlight clear ExtraWhitespace<CR>
+
+map <silent> <LocalLeader>pp :set paste!<CR>
+
+" Pasting over a selection does not replace the clipboard
+xnoremap <expr> p 'pgv"'.v:register.'y'
 
 " ========= Insert Shortcuts ========
 
@@ -208,6 +241,7 @@ nnoremap <silent> <Leader>gw :GitGrepWord<CR>
 
 function! Trim()
   %s/\s*$//
+  ''
 endfunction
 command! -nargs=0 Trim :call Trim()
 nnoremap <silent> <Leader>cw :Trim<CR>
@@ -236,4 +270,53 @@ function! __HardMode()
   nmap j <nop>
   nmap k <nop>
   nmap l <nop>
+  nmap <up> <nop>
+  nmap <down> <nop>
+  nmap <left> <nop>
+  nmap <right> <nop>
 endfunction
+
+"-------- sg config
+" Cursor to orange on insert mode
+" Green on command/other mode
+" Disabled because it misbehaves when changing tmux panes
+" if exists('$TMUX')
+"     let &t_EI = "\\<Esc>Ptmux;\\<Esc>\\033]PlD98E53\\033\\\\\\033[0 q"
+"     let &t_SI = "\\<Esc>Ptmux;\\<Esc>\\033]Pl66FF33\\033\\\\\\033[6 q"
+"     silent !echo -ne "\\033Ptmux;\\033\\033]PlD98E53\\033\\\\"
+"     silent !echo -ne "\\033[0 q"
+"     autocmd VimLeave * silent !echo -ne "\\033Ptmux;\\033\\033]PlD98E53\\033\\\\\\033[0 q"
+" else
+"     let &t_EI = "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
+"     let &t_SI = "\\033]Pl66FF33\\033\\033]50;CursorShape=1\\007"
+"     silent !echo -ne "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
+"     autocmd VimLeave * silent !echo -ne "\\033]PlD98E53\\033\\033]50;CursorShape=0\\007"
+" endif
+
+" Airline
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#tab_nr_type = 1
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline#extensions#tabline#tab_min_count = 2
+" This fixes a quirk where airline doesn't refresh properly
+autocmd BufEnter * AirlineRefresh
+
+" vim-gitgutter
+set updatetime=250
+
+" Set cursor shape in neovim
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE = 1
+
+"-------- Local Overrides
+""If you have options you'd like to override locally for
+"some reason (don't want to store something in a
+""publicly-accessible repository, machine-specific settings, etc.),
+"you can create a '.local_vimrc' file in your home directory
+""(ie: ~/.vimrc_local) and it will be 'sourced' here and override
+"any settings in this file.
+""
+"NOTE: YOU MAY NOT WANT TO ADD ANY LINES BELOW THIS
+if filereadable(expand('~/.vimrc_local'))
+  source ~/.vimrc_local
+end
