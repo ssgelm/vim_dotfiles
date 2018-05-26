@@ -152,6 +152,15 @@ endif
 
 let g:puppet_align_hashes = 0
 
+let $FZF_DEFAULT_COMMAND = 'find * -type f 2>/dev/null | grep -v -E "deps/|_build/|node_modules/|vendor/"'
+let $FZF_DEFAULT_OPTS = '--reverse'
+let g:fzf_tags_command = 'ctags -R --exclude=".git\|.svn\|log\|tmp\|db\|pkg" --extra=+f --langmap=Lisp:+.clj'
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-x': 'split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+
 " ========= Shortcuts ========
 
 " NERDTree
@@ -159,10 +168,13 @@ map <silent> <LocalLeader>nt :NERDTreeToggle<CR>
 map <silent> <LocalLeader>nr :NERDTree<CR>
 map <silent> <LocalLeader>nf :NERDTreeFind<CR>
 
-" CommandT
-map <silent> <leader>ff :CommandT<CR>
-map <silent> <leader>fb :CommandTBuffer<CR>
-map <silent> <leader>fr :CommandTFlush<CR>
+" FZF
+map <silent> <leader>ff :Files<CR>
+map <silent> <leader>fg :GFiles<CR>
+map <silent> <leader>fb :Buffers<CR>
+map <silent> <leader>ft :Tags<CR>
+
+map <silent> <C-p> :Files<CR>
 
 " Ack
 map <LocalLeader>aw :Ack '<C-R><C-W>'

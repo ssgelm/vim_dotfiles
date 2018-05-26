@@ -12,7 +12,8 @@ Plug 'jlanzarotta/bufexplorer'
 Plug 'mileszs/ack.vim'
 Plug 'vim-scripts/Align'
 Plug 'bkad/CamelCaseMotion'
-Plug 'wincent/command-t', { 'do': 'rake make' }
+Plug 'junegunn/fzf', { 'tag': '0.16.7', 'dir': '~/.fzf', 'do': './install --bin' }
+Plug 'junegunn/fzf.vim', {'commit': '990834ab6cb86961e61c55a8e012eb542ceff10e'}
 Plug 'mattn/emmet-vim'
 Plug 'henrik/vim-indexed-search'
 Plug 'vim-scripts/mako.vim'
