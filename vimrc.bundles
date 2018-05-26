@@ -57,7 +57,7 @@ Plug 'google/vim-jsonnet'
 
 " sg's plugins
 Plug 'keith/swift.vim'
-Plug 'ssgelm/vim-nand2tetris-syntax', { 'branch': 'fix-if-goto-highlighting' }
+Plug 'ssgelm/vim-nand2tetris-syntax', { 'branch': 'fix-if-goto-highlight' }
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'airblade/vim-gitgutter'
@@ -67,6 +67,7 @@ Plug 'chilicuil/vim-sml-coursera'
 Plug 'wlangstroth/vim-racket'
 Plug 'vim-utils/vim-vertical-move'
 Plug 'dzeban/vim-log-syntax'
+Plug 'junegunn/goyo.vim'
 
 if filereadable(expand("~/.vimrc.bundles.local"))
   source ~/.vimrc.bundles.local
